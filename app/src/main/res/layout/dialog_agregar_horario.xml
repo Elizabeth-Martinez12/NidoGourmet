@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccione la fecha:"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/txtFecha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Toca para elegir la fecha"
+        android:background="@android:drawable/editbox_background"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccione la hora:"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/txtHora"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Toca para elegir la hora"
+        android:background="@android:drawable/editbox_background"
+        android:textSize="16sp"/>
+</LinearLayout>

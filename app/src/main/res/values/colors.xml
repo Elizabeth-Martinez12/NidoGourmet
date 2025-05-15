@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="dark_light">#18181b</color>
+    <color name="primary_ligth">#5ee9b5</color>
+    <color name="primary_black">#00bc7d</color>
+    <color name="twine_50">#faf7f2</color>
+    <color name="twine_100">#f2ede2</color>
+    <color name="twine_200">#e5d9c3</color>
+    <color name="twine_300">#d4c09d</color>
+    <color name="twine_400">#bf9d70</color>
+    <color name="twine_500">#b58a5a</color>
+    <color name="twine_600">#a7784f</color>
+    <color name="twine_700">#8b6143</color>
+    <color name="twine_800">#714e3b</color>
+    <color name="twine_900">#5c4232</color>
+    <color name="twine_950">#312119</color>
+</resources>

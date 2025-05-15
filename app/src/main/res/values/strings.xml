@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ComederoMóvil</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="alimento_text">Alimento</string>
+    <string name="nivel_compuerta_1">Nivel de alimento compuerta 1: 15/30 cm</string>
+    <string name="nivel_compuerta_2">Nivel de alimento compuerta 2: 13/30 cm</string>
+    <string name="programar_horarios">Programar horarios de dispensación:</string>
+    <string name="compuerta_1">Compuerta 1: </string>
+    <string name="compuerta_2">Compuerta 2: </string>
+    <string name="todas_las_compuertas">Todas las compuertas: </string>
+    <string name="agregar">Agregar</string>
+
+</resources>
