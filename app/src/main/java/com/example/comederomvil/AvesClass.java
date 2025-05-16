@@ -18,5 +18,8 @@ public class AvesClass extends AppCompatActivity {
             Intent intent = new Intent(AvesClass.this, HistorialClass.class);
             startActivity(intent);
         });
+
+
+        WebSocketManager.getInstance().send("Hola desde el aves");
     }
 }
