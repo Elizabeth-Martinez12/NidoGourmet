@@ -10,5 +10,5 @@
     <string name="compuerta_2">Compuerta 2: </string>
     <string name="todas_las_compuertas">Todas las compuertas: </string>
     <string name="agregar">Agregar</string>
-
+    <string name="websocket">ws://192.168.1.74:3000</string>
 </resources>
