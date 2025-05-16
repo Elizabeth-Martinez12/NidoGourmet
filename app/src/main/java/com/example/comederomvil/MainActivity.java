@@ -36,10 +36,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView btnAves;
     private TextView btnAlimento;
 
+    // sesion
+    private SessionManager sessionManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
+
+        this.sessionManager = new SessionManager(this);
 
         // Obtener la URL del WebSocket desde los recursos de cadena
         SERVER_URL = getString(R.string.websocket);
@@ -64,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         startWebSocket();
     }
 
@@ -86,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject();
                     try {
                         json.put("type", "user_connect");
-                        json.put("mensaje", "Hola desde Android");
+                        json.put("token", sessionManager.getAuthToken());
+                        json.put("movil", "si");
                         webSocket.send(json.toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
