@@ -12,5 +12,6 @@
     <string name="agregar">Agregar</string>
     <string name="websocket">ws://192.168.1.74:3000</string>
     <string name="api_base_url">http://192.168.1.74:3000/api/</string>
+    <string name="feeder_id">http://192.168.1.74:3000/api/</string>
 
 </resources>

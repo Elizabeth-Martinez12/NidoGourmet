@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Nivel de Batería: 85%"
+                android:text="Nivel de Batería: 100%"
                 android:textColor="#000000"
                 android:textSize="16sp" />
 

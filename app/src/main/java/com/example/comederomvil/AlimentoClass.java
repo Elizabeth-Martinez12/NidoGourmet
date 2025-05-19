@@ -15,18 +15,23 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.slider.Slider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AlimentoClass extends AppCompatActivity {
@@ -40,6 +45,8 @@ public class AlimentoClass extends AppCompatActivity {
     private SessionManager sessionManager;
     private String SERVER_URL;
     private RequestQueue listaSolicitudes;
+    private Slider sliderf1, sliderf2;
+    private RecyclerView rvHorarios1, rvHorarios2;
 
 
     @SuppressLint("MissingInflatedId")
@@ -64,16 +71,15 @@ public class AlimentoClass extends AppCompatActivity {
         foodLevel1 = findViewById(R.id.compuerta1food);
         foodLevel2 = findViewById(R.id.compuerta2food);
 
+        sliderf1 = findViewById(R.id.compuerta1slider);
+        sliderf2 = findViewById(R.id.compuerta2slider);
 
-        ImageView btnAgregar1 = findViewById(R.id.btnAgregar1);
-        ImageView btnAgregar2 = findViewById(R.id.btnAgregar2);
-        ImageView btnAgregarTodas = findViewById(R.id.btnAgregarTodas);
+        // Configurar RecyclerViews para horarios
+        rvHorarios1 = findViewById(R.id.rvHorarios1);
+        rvHorarios2 = findViewById(R.id.rvHorarios2);
 
-        View.OnClickListener agregarHorarioListener = v -> mostrarDialogoAgregar();
-
-        btnAgregar1.setOnClickListener(agregarHorarioListener);
-        btnAgregar2.setOnClickListener(agregarHorarioListener);
-        btnAgregarTodas.setOnClickListener(agregarHorarioListener);
+        rvHorarios1.setLayoutManager(new LinearLayoutManager(this));
+        rvHorarios2.setLayoutManager(new LinearLayoutManager(this));
 
         addListeners();
 
@@ -88,30 +94,26 @@ public class AlimentoClass extends AppCompatActivity {
         super.onStart();
 
         WebSocketManager.getInstance().setMessageListener(message -> runOnUiThread(() -> {
-            Log.d("WebSocket", "Mensaje recibido en AlimentoClass: " + message);
             try {
                 JSONObject json = new JSONObject(message);
-                String tipo = json.getString("type");
-
-                if (tipo.equals("update_status")) {
+                if (json.getString("type").equals("update_status")) {
+                    // Actualizar niveles directamente
                     JSONObject floodgates = json.getJSONObject("floodgates");
 
                     JSONObject fg1 = floodgates.getJSONObject("1");
-                    int foodLevelc1 = fg1.getInt("foodLevel");
+                    foodLevel1.setText("Compuerta 1: " + fg1.getInt("foodLevel") + "%");
+                    sliderf1.setValue(fg1.getInt("foodLevel"));
 
                     JSONObject fg2 = floodgates.getJSONObject("2");
-                    int foodLevelc2 = fg2.getInt("foodLevel");
+                    foodLevel2.setText("Compuerta 2: " + fg2.getInt("foodLevel") + "%");
+                    sliderf2.setValue(fg2.getInt("foodLevel"));
 
-                    // Actualiza los TextViews específicos de AlimentoClass
-                    foodLevel1.setText("Alimento restante en compuerta 1: " + foodLevelc1 + "%");
-                    foodLevel2.setText("Alimento restante en compuerta 2: " + foodLevelc2 + "%");
-
-                } else {
-                    Toast.makeText(this, "Tipo: " + tipo, Toast.LENGTH_SHORT).show();
+                    // Procesar horarios
+                    handleStatusUpdate(json);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Error al parsear mensaje", Toast.LENGTH_SHORT).show();
+                Log.e("AlimentoClass", "Error WS: " + e.getMessage());
+                Toast.makeText(this, "Error en datos recibidos", Toast.LENGTH_SHORT).show();
             }
         }));
     }
@@ -173,53 +175,32 @@ public class AlimentoClass extends AppCompatActivity {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, SERVER_URL + "device/feeder/67f57821c597ab31781c074d", null,
                 response -> {
                     try {
-                        //
-                        JSONObject data = response.getJSONObject("data");
-
-
-                        JSONObject floodgates = data.getJSONObject("floodgates");
-
-                        JSONObject fg1 = floodgates.getJSONObject("1");
-                        int foodLevelc1 = fg1.getInt("foodLevel");
-
-                        JSONObject fg2 = floodgates.getJSONObject("2");
-                        int foodLevelc2 = fg2.getInt("foodLevel");
-
-                        // Actualizar la interfaz de usuario con los nuevos valores
-                        foodLevel1.setText("Alimento restante en compuerta 1: " + foodLevelc1 + "%");
-                        foodLevel2.setText("Alimento restante en compuerta 2: " + foodLevelc2 + "%");
-
-                        Log.d("data", data.toString());
-
+                        if (response.has("data")) {
+                            handleStatusUpdate(response);
+                        } else {
+                            // Si no viene en "data", procesar directamente
+                            handleStatusUpdate(response);
+                        }
                     } catch (JSONException e) {
-                        Toast.makeText(this, "algo ha fallado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Error al procesar respuesta", Toast.LENGTH_SHORT).show();
+                        Log.e("AlimentoClass", "Error: " + e.getMessage());
                     }
                 },
                 error -> {
-                    Toast.makeText(this, "algo ha fallado" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    Log.d("error", error.toString());
-                }
-        ) {
+                    Toast.makeText(this, "Error de conexión: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("AlimentoClass", "Error de red: " + error.toString());
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                // Añadir la cabecera para el JWT
                 headers.put("x-token", sessionManager.getAuthToken());
                 return headers;
             }
-
-            ;
         };
 
         listaSolicitudes.add(request);
     }
 
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//        WebSocketManager.getInstance().removeMessageListener();
-//    }
 
     private void manipularCompuertas(String type, int number, String toastMessage) {
         Toast.makeText(AlimentoClass.this, toastMessage, Toast.LENGTH_SHORT).show();
@@ -235,48 +216,78 @@ public class AlimentoClass extends AppCompatActivity {
         }
     }
 
-    private void mostrarDialogoAgregar() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Agregar Horario");
 
-        final View customLayout = getLayoutInflater().inflate(R.layout.dialog_agregar_horario, null);
-        builder.setView(customLayout);
+    private void handleStatusUpdate(JSONObject json) throws JSONException {
+        try {
+            // 1. Obtener el objeto de datos correcto
+            JSONObject datos = json;
+            if (json.has("data")) {
+                datos = json.getJSONObject("data");
+            }
 
-        TextView txtFecha = customLayout.findViewById(R.id.txtFecha);
-        TextView txtHora = customLayout.findViewById(R.id.txtHora);
+            // 2. Verificar y obtener el ID del alimentador
+            String feederId = "";
+            if (datos.has("_id")) {
+                feederId = datos.getString("_id");
+            } else if (json.has("_id")) { // Caso para algunos mensajes WebSocket
+                feederId = json.getString("_id");
+            } else {
+                // Usar un ID por defecto o manejar el error
+                feederId = "default_id";
+                Log.w("AlimentoClass", "No se encontró _id, usando valor por defecto");
+            }
 
-        Calendar calendar = Calendar.getInstance();
+            // 3. Obtener las compuertas
+            JSONObject floodgates = datos.getJSONObject("floodgates");
 
-        txtFecha.setOnClickListener(v -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(
-                    this,
-                    (view, year, month, dayOfMonth) -> txtFecha.setText(dayOfMonth + "/" + (month + 1) + "/" + year),
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-            );
-            datePickerDialog.show();
-        });
+            // Procesar compuerta 1
+            JSONObject fg1 = floodgates.getJSONObject("1");
+            int foodLevelc1 = fg1.getInt("foodLevel");
+            foodLevel1.setText("Compuerta 1: " + foodLevelc1 + "%");
+            sliderf1.setValue(foodLevelc1);
+            List<DiaHorario> horarios1 = parseHorarios(fg1, 1);
+            rvHorarios1.setAdapter(new HorarioAdapter(horarios1, 1, feederId, this));
 
-        txtHora.setOnClickListener(v -> {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                    this,
-                    (view, hourOfDay, minute) -> txtHora.setText(hourOfDay + ":" + String.format("%02d", minute)),
-                    calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE),
-                    false
-            );
-            timePickerDialog.show();
-        });
+            // Procesar compuerta 2
+            JSONObject fg2 = floodgates.getJSONObject("2");
+            int foodLevelc2 = fg2.getInt("foodLevel");
+            foodLevel2.setText("Compuerta 2: " + foodLevelc2 + "%");
+            sliderf2.setValue(foodLevelc2);
+            List<DiaHorario> horarios2 = parseHorarios(fg2, 2);
+            rvHorarios2.setAdapter(new HorarioAdapter(horarios2, 2, feederId, this));
 
-        builder.setPositiveButton("Aceptar", (dialog, which) -> {
-            String fecha = txtFecha.getText().toString();
-            String hora = txtHora.getText().toString();
-            Toast.makeText(this, "Horario agregado: " + fecha + " a las " + hora, Toast.LENGTH_LONG).show();
-        });
+        } catch (JSONException e) {
+            Log.e("AlimentoClass", "Error al procesar datos: " + e.getMessage());
+            Toast.makeText(this, "Error al procesar datos del servidor", Toast.LENGTH_SHORT).show();
+            throw e;
+        }
+    }
 
-        builder.setNegativeButton("Cancelar", (dialog, which) -> dialog.dismiss());
+    private List<DiaHorario> parseHorarios(JSONObject compuerta, int numCompuerta) throws JSONException {
+        List<DiaHorario> horarios = new ArrayList<>();
 
-        builder.show();
+        Map<String, String> diasMap = new HashMap<>();
+        diasMap.put("monday", "Lunes");
+        diasMap.put("tuesday", "Martes");
+        diasMap.put("wednesday", "Miércoles");
+        diasMap.put("thursday", "Jueves");
+        diasMap.put("friday", "Viernes");
+        diasMap.put("saturday", "Sábado");
+        diasMap.put("sunday", "Domingo");
+
+        for (Map.Entry<String, String> entry : diasMap.entrySet()) {
+            String diaIng = entry.getKey();
+            String diaEsp = entry.getValue();
+
+            if (compuerta.has(diaIng)) {
+                JSONObject diaJson = compuerta.getJSONObject(diaIng);
+                String startTime = diaJson.getString("startTime");
+                String endTime = diaJson.getString("endTime");
+
+                horarios.add(new DiaHorario(diaIng, diaEsp, startTime, endTime));
+            }
+        }
+
+        return horarios;
     }
 }
