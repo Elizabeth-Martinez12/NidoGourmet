@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,13 +10,26 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
-        android:layout_height="56dp"
-        android:background="@color/twine_600"
+        android:layout_height="wrap_content"
+        android:background="@color/twine_500"
+        android:padding="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:title="Nido Gourmet"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:gravity="center"
+            android:text="Nido Gourmet"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ImageView
         android:id="@+id/feeder_image"
@@ -25,7 +37,7 @@
         android:layout_height="300dp"
         android:layout_marginTop="52dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/aves"
+        android:src="@drawable/_923703_30402"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,34 +48,48 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:background="#E3A978"
         app:cardCornerRadius="10dp"
         app:cardElevation="6dp"
-        android:background="#E3A978"
-        app:layout_constraintTop_toBottomOf="@id/feeder_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/feeder_image">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/battery_level"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Nivel de Batería: 85%"
                 android:textColor="#000000"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
 
             <TextView
-                android:id="@+id/registered_birds"
+                android:id="@+id/food_level_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aves registradas: 16"
+                android:text="Alimento restante en compuerta 1: 100%"
+                android:textAlignment="center"
                 android:textColor="#000000"
-                android:textSize="16sp"/>
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/food_level_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alimento restante en compuerta 2: 100%"
+                android:textAlignment="center"
+                android:textColor="#000000"
+                android:textSize="16sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -72,28 +98,32 @@
         android:id="@+id/button_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/info_card"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/info_card">
 
         <TextView
             android:id="@+id/btn_aves"
             android:layout_width="100dp"
-            android:layout_height="60dp"
+            android:layout_height="100dp"
             android:layout_marginRight="10dp"
-            android:text="Aves"
+            android:background="@drawable/ave_trazo"
             android:gravity="center"
-            android:background="@drawable/boton_ave" />
+            android:text="Aves"
+            android:textColor="@color/black" />
+
         <TextView
             android:id="@+id/btn_alimento"
-            android:layout_width="110dp"
-            android:layout_height="60dp"
-            android:text="Alimento"
+            android:layout_width="100dp"
+            android:layout_height="70dp"
+            android:background="@drawable/granos"
             android:gravity="center"
-            android:background="@drawable/boton_alimento"/>
+            android:text="Alimento"
+            android:textColor="@color/black" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

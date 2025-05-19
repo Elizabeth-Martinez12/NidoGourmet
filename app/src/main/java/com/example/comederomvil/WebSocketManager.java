@@ -16,11 +16,17 @@ import okhttp3.WebSocketListener;
 
 public class WebSocketManager {
 
+    public interface MessageListener {
+        void onMessageReceived(String message);
+    }
+
     private static WebSocketManager instance;
     private WebSocket webSocket;
     private final OkHttpClient client;
     private final Handler mainHandler;
     private String SERVER_URL;
+
+    private MessageListener messageListener;
 
     private WebSocketManager() {
         client = new OkHttpClient();
@@ -34,10 +40,17 @@ public class WebSocketManager {
         return instance;
     }
 
-    public void connect(Context context, String token) {
-        if (webSocket != null) return; // Ya está conectado
+    public void setMessageListener(MessageListener listener) {
+        this.messageListener = listener;
+    }
 
-        // Obtener la URL del WebSocket desde los recursos de cadena
+    public void removeMessageListener() {
+        this.messageListener = null;
+    }
+
+    public void connect(Context context, String token) {
+        if (webSocket != null) return;
+
         SERVER_URL = context.getString(R.string.websocket);
 
         Request request = new Request.Builder().url(SERVER_URL).build();
@@ -61,9 +74,13 @@ public class WebSocketManager {
 
             @Override
             public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-                mainHandler.post(() ->
-                        Toast.makeText(context, "Mensaje recibido: " + text, Toast.LENGTH_SHORT).show()
-                );
+                mainHandler.post(() -> {
+                    if (messageListener != null) {
+                        messageListener.onMessageReceived(text);
+                    } else {
+                        Toast.makeText(context, "Mensaje recibido (sin listener): " + text, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override

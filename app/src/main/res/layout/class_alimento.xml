@@ -26,49 +26,56 @@
         android:textSize="18sp"
         android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/linearLayoutAlimento"
-        android:layout_width="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/info_card"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#E5A06E"
-        android:elevation="6dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="#E3A978"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp">
 
-        <TextView
-            android:layout_width="255dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Nivel de alimento"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/compuerta1food"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Compuerta 1: 13/30 cm"
-            android:textSize="14sp" />
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Niveles de alimento:"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/compuerta1food"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alimento restante en compuerta 2: 0%"
+                android:textSize="14sp" />
 
 
-        <TextView
-            android:id="@+id/compuerta2food"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
-            android:text="Compuerta 2: 13/30 cm"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/compuerta2food"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="Alimento restante en compuerta 1: 0%"
+                android:textSize="14sp" />
+
+        </LinearLayout>
 
 
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 
     <!--    botones -->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
